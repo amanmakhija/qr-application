@@ -15,9 +15,9 @@ export class AnalyticsService {
 
   async getDailyOrders(date: Date) {
     const startOfDay = new Date(date);
-    startOfDay.setHours(0, 0, 0, 0);
+    startOfDay.setUTCHours(0, 0, 0, 0);
     const endOfDay = new Date(date);
-    endOfDay.setHours(23, 59, 59, 999);
+    endOfDay.setUTCHours(23, 59, 59, 999);
 
     return this.prisma.order.findMany({
       where: {
@@ -33,12 +33,15 @@ export class AnalyticsService {
           },
         },
       },
+      orderBy: {
+        createdAt: 'asc',
+      },
     });
   }
 
   async getMonthlyOrders(year: number, month: number) {
-    const startOfMonth = new Date(year, month - 1, 1);
-    const endOfMonth = new Date(year, month, 0, 23, 59, 59, 999);
+    const startOfMonth = new Date(Date.UTC(year, month - 1, 1, 0, 0, 0, 0));
+    const endOfMonth = new Date(Date.UTC(year, month, 0, 23, 59, 59, 999));
 
     return this.prisma.order.findMany({
       where: {
@@ -54,15 +57,24 @@ export class AnalyticsService {
           },
         },
       },
+      orderBy: {
+        createdAt: 'asc',
+      },
     });
   }
 
   async getQRCodeScans(startDate: Date, endDate: Date) {
+    const startUtc = new Date(startDate);
+    startUtc.setUTCHours(0, 0, 0, 0);
+
+    const endUtc = new Date(endDate);
+    endUtc.setUTCHours(23, 59, 59, 999);
+
     return this.prisma.qRCodeScan.findMany({
       where: {
         scannedAt: {
-          gte: startDate,
-          lte: endDate,
+          gte: startUtc,
+          lte: endUtc,
         },
       },
       orderBy: {
@@ -72,12 +84,18 @@ export class AnalyticsService {
   }
 
   async getPopularItems(startDate: Date, endDate: Date) {
+    const startUtc = new Date(startDate);
+    startUtc.setUTCHours(0, 0, 0, 0);
+
+    const endUtc = new Date(endDate);
+    endUtc.setUTCHours(23, 59, 59, 999);
+
     const orderItems = await this.prisma.orderItem.findMany({
       where: {
         order: {
           createdAt: {
-            gte: startDate,
-            lte: endDate,
+            gte: startUtc,
+            lte: endUtc,
           },
         },
       },
@@ -107,11 +125,17 @@ export class AnalyticsService {
   }
 
   async getRevenueStats(startDate: Date, endDate: Date) {
+    const startUtc = new Date(startDate);
+    startUtc.setUTCHours(0, 0, 0, 0);
+
+    const endUtc = new Date(endDate);
+    endUtc.setUTCHours(23, 59, 59, 999);
+
     const orders = await this.prisma.order.findMany({
       where: {
         createdAt: {
-          gte: startDate,
-          lte: endDate,
+          gte: startUtc,
+          lte: endUtc,
         },
         status: {
           not: 'CANCELLED',
