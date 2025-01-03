@@ -112,7 +112,7 @@ export default function MenuPage() {
               </p>
               <div className="mt-4 flex items-center justify-between">
                 <span className="text-lg font-medium text-gray-900 dark:text-white">
-                  ${item.price.toFixed(2)}
+                  ₹{item.price.toFixed(2)}
                 </span>
                 <button
                   onClick={() => handleAddToCart(item)}

@@ -48,7 +48,7 @@ export default function CartPage() {
                 {item.name}
               </h3>
               <p className="text-gray-600 dark:text-gray-300">
-                ${item.price.toFixed(2)}
+                ₹{item.price.toFixed(2)}
               </p>
             </div>
 
@@ -88,7 +88,7 @@ export default function CartPage() {
             Total
           </span>
           <span className="text-lg font-semibold text-gray-900 dark:text-white">
-            ${total.toFixed(2)}
+            ₹{total.toFixed(2)}
           </span>
         </div>
         <button
